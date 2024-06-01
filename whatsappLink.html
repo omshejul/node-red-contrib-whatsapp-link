@@ -1,51 +1,53 @@
 <script type="text/javascript">
-    RED.nodes.registerType('whatsappLink',{
-        category: 'config',
+    RED.nodes.registerType('whatsappLink', {
+        category: 'input',
+        color: '#a6bbcf',
         defaults: {
-            cName : {value:"whatsapp-web",required:true},
-            name : {value : "Web"},
-            clientType: {},
-            onlineStatus : {value : true},
-            loopTime : {value : 5, validate:RED.validators.number()}
+            name: { value: "" },
+            clientType: { value: "waWebClient", required: true },
+            loopTime: { value: 1, required: true, validate: RED.validators.number() },
+            onlineStatus: { value: true },
+            clientIds: { value: "", required: true } // Add a field for client IDs
         },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-whatsapp",
         label: function() {
-            return this.clientType;
+            return this.name || "whatsappLink";
         },
-        oneditprepare: function(){
-            $("#node-config-input-clientType").typedInput({
-                types: [
-                    {
-                        value: "Select Client Type",
-                        options: [
-                            { value: "waSocketClient", label: "Whatsapp Lite"},
-                            { value: "waWebClient", label: "Whatsapp Web"},
-                        ]
-                    }
-                ]
-            });
+        oneditprepare: function() {
+            $("#node-input-clientType").change(function() {
+                var type = $(this).val();
+                if (type === "waWebClient") {
+                    $(".socketClient-settings").hide();
+                } else {
+                    $(".socketClient-settings").show();
+                }
+            }).trigger('change');
         }
     });
 </script>
 
-<script type="text/html" data-template-name="whatsappLink">
-    <div>
-        <label ><i class="fa fa-cog"></i> Whatsapp Client : 
-            <input type="text" id="node-config-input-clientType" style="width:40%;">  
-            <input type="checkbox" id="node-config-input-onlineStatus">
-        </label>
-    </div>
-    
-    <br>
-    <div class="form-tips">
-        <p> All done here just Select the type of Whatsapp Client and proceed.</p>
-        <p> <b>Checkbox On </b> : Shows Online.</p>
-        <p> <b>Checkbox Off </b> : Shows last seen (As per main device).</p>
-        <p> To recive push notification on main device, Turn Checkbox Off.</p>
-    </div>
-    <br>
-    <div>
-        <label ><i class="fa fa-cog"></i> Ping Whatsapp to avoid sleep every : 
-            <input type="text" placeholder="05" id="node-config-input-loopTime" style="width: 15%;"> hr.
-        </label>
-    </div>
-</script>
+<div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name">
+</div>
+<div class="form-row">
+    <label for="node-input-clientType"><i class="fa fa-code"></i> Client Type</label>
+    <select id="node-input-clientType" style="width: 100%;">
+        <option value="waWebClient">WhatsApp Web Client</option>
+        <option value="waSocketClient">WhatsApp Socket Client</option>
+    </select>
+</div>
+<div class="form-row">
+    <label for="node-input-loopTime"><i class="fa fa-clock-o"></i> Loop Time (hours)</label>
+    <input type="number" id="node-input-loopTime">
+</div>
+<div class="form-row">
+    <label for="node-input-onlineStatus"><i class="fa fa-signal"></i> Online Status</label>
+    <input type="checkbox" id="node-input-onlineStatus">
+</div>
+<div class="form-row">
+    <label for="node-input-clientIds"><i class="fa fa-id-badge"></i> Client IDs (comma separated)</label>
+    <input type="text" id="node-input-clientIds" placeholder="client1,client2,client3">
+</div>
