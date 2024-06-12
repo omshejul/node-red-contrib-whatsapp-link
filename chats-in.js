@@ -23,7 +23,7 @@ module.exports = function(RED) {
         };
 
         // Ensure the base directory exists
-        const imagesDir = '/home/om/Saved/nt/WhatsApp/Images/';
+        const imagesDir = '/WhatsApp/Media/';
         if (!fs.existsSync(imagesDir)) {
             fs.mkdirSync(imagesDir, { recursive: true });
         }
